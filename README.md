@@ -18,8 +18,9 @@ Most media players on linux use dbus to display information to other application
 * Lollypop: `Lollypop`
 * Rhythmbox: `rhythmbox`
 * Audacious: `audacious`
+* Clementine: `clementine`
+* Strawberry: `strawberry`
 * For the KDE browser extension (youtube, twitch, etc) use `plasma-browser-integration`
-
 
 Input the address into `bus_name` in `config.py`, then ensure the discord client is running, finally run 
 ```
