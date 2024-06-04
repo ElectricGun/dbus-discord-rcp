@@ -21,8 +21,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+# fork of https://github.com/Iangecko/dbus-discord-rcp
+
 import dbus
 import time
+import traceback
 try:
     import pypresence
 except ModuleNotFoundError:
@@ -110,11 +113,14 @@ class Presence:
                 time.sleep(2)
     
     def update(self, state, details, **kwargs):
-        self.RPC.update(state=state, details=details, large_text="https://github.com/Iangecko/dbus-discord-rcp", **kwargs)
+        self.RPC.update(state=state, details=details, **kwargs)
 
     def update_song(self, song:Song):
-        self.update(state=f"{song.artist} - {song.album}", details=song.title, large_image=self.large_image,
+
+        self.update(state=f"{song.artist} - {song.album}", details=song.title, 
+        # large_image=self.large_image,
         end=time.time()+(song.duration_seconds-song.timestamp_seconds))
+        
 
     def connect(self):
         self.RPC.connect()
@@ -183,7 +189,8 @@ if __name__ == "__main__":
                     current_song = bus.current_song()
                     song_hash = current_song.get_hash()
 
-                    if song_hash != previous_hash:
+                    #if song_hash != previous_hash:
+                    if True: # left True so that the time left keeps getting updated
                         presence.update_song(current_song)
                         previous_hash = song_hash
 
@@ -203,13 +210,17 @@ if __name__ == "__main__":
                         if bash_formatting: print(f"\n{c.red}Connection {c.bold}terminated{c.clear}")
                         else: print("\nConnection terminated")
                         exit()
-        except Exception as e:
-            print(e)
+        except ConnectionRefusedError as e:
+            print(traceback.format_exc())
             print("Retrying in 2 secs")
-            presence.close()
             time.sleep(2)
         except KeyboardInterrupt:
             presence.close()
             if bash_formatting: print(f"\n{c.red}App {c.bold}exited{c.clear}")
             else: print("\App exited")
             exit()
+        except Exception as e:
+            print(traceback.format_exc())
+            print("Retrying in 2 secs")
+            presence.close()
+            time.sleep(2)
