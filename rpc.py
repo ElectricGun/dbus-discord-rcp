@@ -172,7 +172,7 @@ if __name__ == "__main__":
     if show_updates: print(f"{await_update_color}Awaiting media updates...\n")
     else: print("Listening for updates, no output shown (show_updates=False)")
 
-    while True:
+    while True: # reset on error
         try:
             previous_hash = 0
             bus = Bus(config.bus_name)
